@@ -4,7 +4,7 @@ import sys
 from ._ffi import ffi
 
 def find_library():
-    libname = "qiwrapper"
+    libname = "qpickwrapper"
     if sys.platform == 'win32':
         prefix = ''
         suffix = 'dll'
