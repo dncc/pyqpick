@@ -11,7 +11,7 @@ setup(
     description=('Python bindings for the rust `qpick` crate - Query Pickaxe'),
     license='MIT',
     keywords=['inverted', 'index', 'rust'],
-    url='https://github.com/dncc/pyquin',
+    url='https://github.com/dncc/pyqpick',
     setup_requires=[
         'cffi>=1.0.0'],
     install_requires=['cffi>=1.0.0'],
