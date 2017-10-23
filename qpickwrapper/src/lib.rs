@@ -92,7 +92,7 @@ macro_rules! mutref_from_ptr {
 // Declare a function that returns the next item from a qpick vector
 #[no_mangle]
 pub extern fn qpick_iter_next(ptr: *mut qpick::QpickResults) -> *mut QpickItem {
-    let mut res = mutref_from_ptr!(ptr);
+    let res = mutref_from_ptr!(ptr);
     // let mut iter = res.items.iter();
     match res.next() {
         Some(qid_sc) => to_raw_ptr(QpickItem { qid: qid_sc.0, sc: qid_sc.1 }),
@@ -103,7 +103,6 @@ pub extern fn qpick_iter_next(ptr: *mut qpick::QpickResults) -> *mut QpickItem {
 make_free_fn!(qpick_results_free, *mut qpick::QpickResults);
 make_free_fn!(qpick_item_free, *mut QpickItem);
 
-// TODO simplify, replace QpickResults with Vec
 #[no_mangle]
 pub extern "C" fn qpick_get(
     ptr: *mut Qpick,
@@ -112,4 +111,27 @@ pub extern "C" fn qpick_get(
 
     let query = cstr_to_str(query);
     to_raw_ptr(ref_from_ptr!(ptr).get(query, count))
+}
+
+// --- nget queries api
+#[no_mangle]
+pub extern "C" fn query_vec_init() -> *mut Vec<String> {
+    to_raw_ptr(vec![])
+}
+make_free_fn!(query_vec_free, *mut Vec<String>);
+
+#[no_mangle]
+pub extern "C" fn query_vec_push(ptr: *mut Vec<String>, query: *mut libc::c_char) {
+    let query = cstr_to_str(query);
+
+    mutref_from_ptr!(ptr).push(query.to_string());
+}
+
+#[no_mangle]
+pub extern "C" fn qpick_nget(
+    ptr: *mut Qpick,
+    queries: *mut Vec<String>,
+    count: libc::uint32_t) -> *mut qpick::QpickResults {
+
+    to_raw_ptr(ref_from_ptr!(ptr).nget(ref_from_ptr!(queries), count))
 }

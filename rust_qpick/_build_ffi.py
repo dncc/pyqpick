@@ -26,6 +26,15 @@ ffi.cdef("""
     void qpick_results_free(QpickResults*);
     void qpick_item_free(QpickItem*);
 
+    /**
+       nget api
+    **/
+    typedef struct QpickQueryVec QpickQueryVec;
+    QpickQueryVec* query_vec_init();
+    void query_vec_free(QpickQueryVec*);
+    void query_vec_push(QpickQueryVec*, char*);
+
+    QpickResults* qpick_nget(Qpick*, QpickQueryVec*, uint32_t);
 
 """)
 

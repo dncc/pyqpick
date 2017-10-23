@@ -70,8 +70,23 @@ class Qpick(object):
         lib.string_free(c_str)
         return py_str
 
+    # qpick.get('a')
     def get(self, query, count=100):
         res_ptr = lib.qpick_get(self._ptr, query, count)
+        return QpickResultsIterator(res_ptr,
+                                    lib.qpick_iter_next,
+                                    lib.qpick_results_free)
+
+    # qpick.nget(['a', 'b', 'c'])
+    def nget(self, queries, count=100):
+        qvec = lib.query_vec_init()
+        qvec_ptr = ffi.gc(qvec, lib.query_vec_free)
+
+        for q in queries:
+            lib.query_vec_push(qvec_ptr, q)
+
+        res_ptr = lib.qpick_nget(self._ptr, qvec_ptr, count)
+
         return QpickResultsIterator(res_ptr,
                                     lib.qpick_iter_next,
                                     lib.qpick_results_free)
