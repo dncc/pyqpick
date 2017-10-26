@@ -6,6 +6,7 @@ ffi.cdef("""
     typedef struct Qpick Qpick;
 
     Qpick* qpick_init(char*);
+    Qpick* qpick_init_with_shard_range(char*, uint32_t, uint32_t);
     void qpick_free(Qpick*);
     char* qpick_get_as_string(Qpick*, char*);
     void string_free(char*);

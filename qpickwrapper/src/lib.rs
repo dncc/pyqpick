@@ -54,6 +54,18 @@ pub extern "C" fn qpick_init(path: *mut libc::c_char) -> *mut Qpick {
     let qpick = Qpick::from_path(path.to_string());
     to_raw_ptr(qpick)
 }
+
+#[no_mangle]
+pub extern "C" fn qpick_init_with_shard_range(path: *mut libc::c_char,
+                                         start_shard: libc::uint32_t,
+                                         end_shard: libc::uint32_t) -> *mut Qpick {
+    let path = cstr_to_str(path);
+    let qpick = Qpick::from_path_with_shard_range(
+        path.to_string(),
+        (start_shard..end_shard),
+    );
+    to_raw_ptr(qpick)
+}
 make_free_fn!(qpick_free, *mut Qpick);
 
 #[no_mangle]

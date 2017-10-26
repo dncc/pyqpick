@@ -46,10 +46,12 @@ class QpickResultsIterator(object):
 
 
 class Qpick(object):
-    def __init__(self, dir_path=None, _pointer=None):
+    def __init__(self, dir_path=None, start_shard=None, end_shard=None, _pointer=None):
         """Loads a query index from a given directory.
 
         :param dir_path:    Directory path to index on disk
+        :param start_shard: Index of the first shard in the index to load
+        :param end_shard:   Index of the last shard in the index to load
         """
         # self._ctx = ffi.gc(lib.qpick_context_new(), lib.qpick_context_free)
 
@@ -57,8 +59,16 @@ class Qpick(object):
             if not os.path.isdir(dir_path):
                 raise Exception("%s is not a directory!" % dir_path)
 
-            # returns a pointer to rust Qpick struct
-            s = lib.qpick_init(dir_path)
+            if start_shard is not None and end_shard is not None:
+                if end_shard <= start_shard:
+                    raise Exception("Index of the last shard has to be greater than the start index!")
+                else:
+                    # returns a pointer to rust Qpick struct
+                    s = lib.qpick_init_with_shard_range(dir_path, start_shard, end_shard)
+
+            else:
+                # returns a pointer to rust Qpick struct
+                s = lib.qpick_init(dir_path)
         else:
             s = _pointer
 
